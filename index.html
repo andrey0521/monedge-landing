@@ -128,19 +128,47 @@
     .hero-trust { display: flex; flex-wrap: wrap; gap: 18px; }
     .trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--dim); }
 
-    /* ── BROWSER MOCKUP ── */
-    .browser-mockup { display: flex; justify-content: center; align-items: center; }
+    /* ── PHONE MOCKUP (hero) ── */
+    .phone-mockup { display: flex; justify-content: center; align-items: center; }
+    .phone-frame {
+      width: 240px;
+      background: #111827;
+      border-radius: 42px;
+      border: 8px solid #1f2937;
+      box-shadow: 0 48px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06), inset 0 0 0 2px rgba(255,255,255,0.04);
+      overflow: hidden;
+      position: relative;
+    }
+    .phone-notch-bar {
+      background: #111827;
+      height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 2;
+    }
+    .phone-notch-pill {
+      width: 80px; height: 10px;
+      background: #000; border-radius: 100px;
+    }
+    .phone-frame img {
+      width: 100%; display: block;
+    }
+
+    /* ── BROWSER MOCKUP (showcase) ── */
+    .showcase-section { padding: 0 24px 80px; }
+    .showcase-inner { max-width: 1100px; margin: 0 auto; }
+    .showcase-label { text-align: center; font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .14em; margin-bottom: 10px; }
+    .showcase-title { text-align: center; font-size: clamp(22px, 3vw, 34px); font-weight: 800; letter-spacing: -.025em; margin-bottom: 40px; }
     .browser-frame {
-      width: 100%; max-width: 520px;
+      width: 100%;
       background: #1a2236;
       border-radius: 14px;
       border: 1px solid rgba(255,255,255,0.1);
-      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04);
       overflow: hidden;
     }
     .browser-bar {
       background: #111827;
-      padding: 10px 14px;
+      padding: 10px 16px;
       display: flex; align-items: center; gap: 10px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
     }
@@ -151,12 +179,9 @@
     .browser-dot.green { background: #34d399; }
     .browser-url {
       flex: 1; background: rgba(255,255,255,0.06); border-radius: 6px;
-      padding: 4px 10px; font-size: 11px; color: var(--muted);
+      padding: 4px 12px; font-size: 11px; color: var(--muted);
     }
-    .browser-frame img {
-      width: 100%; display: block;
-      border-top: none;
-    }
+    .browser-frame img { width: 100%; display: block; }
 
     /* ══════════════════════════════════════
        STATS (EL PROBLEMA)
@@ -402,18 +427,11 @@
         </div>
       </div>
 
-      <!-- Browser Mockup con screenshot real -->
-      <div class="browser-mockup">
-        <div class="browser-frame">
-          <div class="browser-bar">
-            <div class="browser-dots">
-              <div class="browser-dot red"></div>
-              <div class="browser-dot amber"></div>
-              <div class="browser-dot green"></div>
-            </div>
-            <div class="browser-url">monedge.app/panel</div>
-          </div>
-          <img src="inicio.png" alt="Dashboard de Monedge — panel principal con KPIs, movimientos y presupuestos" />
+      <!-- Phone Mockup con screenshot real -->
+      <div class="phone-mockup">
+        <div class="phone-frame">
+          <div class="phone-notch-bar"><div class="phone-notch-pill"></div></div>
+          <img src="inicio-iPhon-screen.png" alt="Monedge en móvil — resumen IA, KPIs y balance del mes" />
         </div>
       </div>
 
@@ -616,6 +634,26 @@
             Tú pagas $89 pesos — menos que una comida rápida — y a cambio obtienes una plataforma que protege tus datos y te genera ahorros reales.
           </p>
         </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════ SHOWCASE (full screen) ════ -->
+  <section class="showcase-section">
+    <div class="showcase-inner">
+      <div class="showcase-label">El producto</div>
+      <h2 class="showcase-title">Tu panel financiero, todo en un lugar</h2>
+      <div class="browser-frame">
+        <div class="browser-bar">
+          <div class="browser-dots">
+            <div class="browser-dot red"></div>
+            <div class="browser-dot amber"></div>
+            <div class="browser-dot green"></div>
+          </div>
+          <div class="browser-url">monedge.app/panel — Inicio</div>
+        </div>
+        <img src="inicio-full-screen.png" alt="Dashboard completo de Monedge con KPIs, movimientos, cuentas, presupuestos y metas" />
       </div>
     </div>
   </section>
