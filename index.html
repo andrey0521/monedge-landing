@@ -128,48 +128,35 @@
     .hero-trust { display: flex; flex-wrap: wrap; gap: 18px; }
     .trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--dim); }
 
-    /* ── PHONE MOCKUP ── */
-    .phone-frame {
-      width: 255px; height: 515px;
-      background: linear-gradient(160deg, #1a2236 0%, #0e1521 100%);
-      border-radius: 40px; border: 2px solid rgba(255,255,255,0.1);
-      box-shadow: 0 50px 90px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.07);
-      padding: 18px 14px 14px; display: flex; flex-direction: column; gap: 9px;
-      position: relative; overflow: hidden;
+    /* ── BROWSER MOCKUP ── */
+    .browser-mockup { display: flex; justify-content: center; align-items: center; }
+    .browser-frame {
+      width: 100%; max-width: 520px;
+      background: #1a2236;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+      overflow: hidden;
     }
-    .phone-glow {
-      position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
-      width: 220px; height: 160px;
-      background: radial-gradient(circle, rgba(22,91,197,0.28), transparent 70%); pointer-events: none;
+    .browser-bar {
+      background: #111827;
+      padding: 10px 14px;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
     }
-    .phone-notch { width: 72px; height: 7px; background: rgba(255,255,255,0.08); border-radius: 100px; margin: 0 auto 4px; flex-shrink: 0; }
-    .pk { background: rgba(22,91,197,0.18); border: 1px solid rgba(22,91,197,0.28); border-radius: 14px; padding: 12px; text-align: center; flex-shrink: 0; }
-    .pk-lbl { font-size: 8.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
-    .pk-val { font-size: 22px; font-weight: 800; color: #fff; margin: 3px 0; }
-    .pk-sub { font-size: 9px; color: var(--green); font-weight: 700; }
-    .prow { display: flex; gap: 8px; flex-shrink: 0; }
-    .pm { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 9px 8px; text-align: center; }
-    .pm-lbl { font-size: 7.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-    .pm-val { font-size: 13px; font-weight: 700; margin-top: 3px; }
-    .c-green { color: var(--green); } .c-red { color: #f87171; }
-    .pbar { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 10px; flex-shrink: 0; }
-    .pbar-lbl { font-size: 8px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
-    .bars { display: flex; align-items: flex-end; gap: 5px; height: 44px; }
-    .bar { flex: 1; border-radius: 4px 4px 0 0; background: rgba(22,91,197,0.38); }
-    .bar.hi { background: var(--blue); }
-    .ptx { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 7px; }
-    .ptx-lbl { font-size: 7.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
-    .tx { display: flex; align-items: center; gap: 7px; }
-    .tx-ico { width: 20px; height: 20px; border-radius: 6px; background: rgba(22,91,197,0.2); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
-    .tx-info { flex: 1; }
-    .tx-n { font-size: 8px; color: #e5e7eb; font-weight: 600; }
-    .tx-c { font-size: 7px; color: var(--muted); }
-    .tx-a { font-size: 9px; font-weight: 700; }
-    .pai { background: rgba(22,91,197,0.14); border: 1px solid rgba(22,91,197,0.3); border-radius: 12px; padding: 8px 10px; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
-    .pai-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue-light); flex-shrink: 0; animation: blink 1.6s ease-in-out infinite; }
-    @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
-    .pai-txt { font-size: 8px; color: #93c5fd; line-height: 1.45; }
-    .phone-mockup { display: flex; justify-content: center; }
+    .browser-dots { display: flex; gap: 6px; }
+    .browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .browser-dot.red   { background: #ef4444; }
+    .browser-dot.amber { background: #fbbf24; }
+    .browser-dot.green { background: #34d399; }
+    .browser-url {
+      flex: 1; background: rgba(255,255,255,0.06); border-radius: 6px;
+      padding: 4px 10px; font-size: 11px; color: var(--muted);
+    }
+    .browser-frame img {
+      width: 100%; display: block;
+      border-top: none;
+    }
 
     /* ══════════════════════════════════════
        STATS (EL PROBLEMA)
@@ -415,53 +402,18 @@
         </div>
       </div>
 
-      <!-- Phone Mockup -->
-      <div class="phone-mockup">
-        <div class="phone-frame">
-          <div class="phone-glow"></div>
-          <div class="phone-notch"></div>
-          <div class="pk">
-            <div class="pk-lbl">Balance total</div>
-            <div class="pk-val">$28,450</div>
-            <div class="pk-sub">▲ Ahorraste 20% este mes</div>
-          </div>
-          <div class="prow">
-            <div class="pm"><div class="pm-lbl">Ingresos</div><div class="pm-val c-green">$12,000</div></div>
-            <div class="pm"><div class="pm-lbl">Gastos</div><div class="pm-val c-red">$4,320</div></div>
-          </div>
-          <div class="pbar">
-            <div class="pbar-lbl">Últimos 6 meses</div>
-            <div class="bars">
-              <div class="bar" style="height:38%"></div>
-              <div class="bar" style="height:54%"></div>
-              <div class="bar" style="height:34%"></div>
-              <div class="bar" style="height:68%"></div>
-              <div class="bar" style="height:58%"></div>
-              <div class="bar hi" style="height:84%"></div>
+      <!-- Browser Mockup con screenshot real -->
+      <div class="browser-mockup">
+        <div class="browser-frame">
+          <div class="browser-bar">
+            <div class="browser-dots">
+              <div class="browser-dot red"></div>
+              <div class="browser-dot amber"></div>
+              <div class="browser-dot green"></div>
             </div>
+            <div class="browser-url">monedge.app/panel</div>
           </div>
-          <div class="ptx">
-            <div class="ptx-lbl">Recientes · IA categorizada</div>
-            <div class="tx">
-              <div class="tx-ico">🍔</div>
-              <div class="tx-info"><div class="tx-n">McDonald's</div><div class="tx-c">Alimentación</div></div>
-              <div class="tx-a c-red">−$85</div>
-            </div>
-            <div class="tx">
-              <div class="tx-ico">💼</div>
-              <div class="tx-info"><div class="tx-n">Salario</div><div class="tx-c">Ingresos</div></div>
-              <div class="tx-a c-green">+$12,000</div>
-            </div>
-            <div class="tx">
-              <div class="tx-ico">⚡</div>
-              <div class="tx-info"><div class="tx-n">CFE</div><div class="tx-c">Servicios</div></div>
-              <div class="tx-a c-red">−$420</div>
-            </div>
-          </div>
-          <div class="pai">
-            <div class="pai-dot"></div>
-            <div class="pai-txt">Puedes ahorrar $2,400 este mes reduciendo restaurantes 🎯</div>
-          </div>
+          <img src="inicio.png" alt="Dashboard de Monedge — panel principal con KPIs, movimientos y presupuestos" />
         </div>
       </div>
 
