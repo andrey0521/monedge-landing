@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monedge — Tu copiloto financiero con IA</title>
+  <meta name="description" content="Monedge categoriza tus gastos automáticamente, detecta fugas de dinero y te ayuda a ahorrar hasta un 20% de tu salario sin esfuerzo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'Inter', sans-serif; background: #0d1117; color: #fff; -webkit-font-smoothing: antialiased; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── TOKENS ── */
+    :root {
+      --blue:       #165BC5;
+      --blue-dark:  #0B3EA1;
+      --blue-light: #4d8ef0;
+      --green:      #34d399;
+      --amber:      #fbbf24;
+      --red:        #ef4444;
+      --bg:         #0d1117;
+      --bg-card:    rgba(255,255,255,0.03);
+      --bg-footer:  #080c12;
+      --border:     rgba(255,255,255,0.08);
+      --muted:      #9ca3af;
+      --dim:        #6b7280;
+    }
+
+    /* ══════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════ */
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      background: rgba(13,17,23,0.8);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .header-inner {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      height: 64px; display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #165BC5, #0B3EA1);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 17px; box-shadow: 0 4px 18px rgba(22,91,197,0.4);
+    }
+    .logo-text { font-size: 16px; font-weight: 800; letter-spacing: -0.02em; }
+    .nav { display: flex; align-items: center; gap: 28px; }
+    .nav a { font-size: 14px; color: var(--muted); transition: color .2s; }
+    .nav a:hover { color: #fff; }
+    @media (max-width: 768px) { .nav { display: none; } }
+    .header-actions { display: flex; align-items: center; gap: 8px; }
+
+    /* ── BUTTONS ── */
+    .btn-ghost { font-size: 14px; color: var(--muted); padding: 8px 16px; border-radius: 8px; transition: color .2s; font-weight: 500; }
+    .btn-ghost:hover { color: #fff; }
+    @media (max-width: 560px) { .btn-ghost { display: none; } }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--blue); color: #fff;
+      font-size: 14px; font-weight: 600;
+      padding: 9px 18px; border-radius: 9px; border: none; cursor: pointer;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 18px rgba(22,91,197,0.35);
+    }
+    .btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+    .btn-primary.lg { font-size: 15px; padding: 15px 32px; border-radius: 13px; box-shadow: 0 6px 28px rgba(22,91,197,0.4); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: transparent; color: var(--muted);
+      font-size: 14px; font-weight: 500;
+      padding: 15px 26px; border-radius: 13px;
+      border: 1px solid rgba(255,255,255,0.12);
+      transition: color .2s, border-color .2s;
+    }
+    .btn-outline:hover { color: #fff; border-color: rgba(255,255,255,0.22); }
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+    .hero { position: relative; padding: 160px 24px 90px; overflow: hidden; }
+    .hero-glow {
+      position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 700px;
+      background: radial-gradient(ellipse at center, rgba(22,91,197,0.14) 0%, transparent 68%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+      background-size: 60px 60px; pointer-events: none;
+    }
+    .hero-content {
+      position: relative; max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: center;
+    }
+    @media (max-width: 900px) {
+      .hero-content { grid-template-columns: 1fr; text-align: center; }
+      .hero-ctas, .hero-trust { justify-content: center !important; }
+    }
+
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(22,91,197,0.12); border: 1px solid rgba(22,91,197,0.32);
+      border-radius: 100px; padding: 6px 14px; margin-bottom: 22px;
+      font-size: 11px; color: var(--blue-light); font-weight: 600; letter-spacing: 0.02em;
+    }
+    .hero h1 {
+      font-size: clamp(28px, 4.5vw, 52px); font-weight: 900; line-height: 1.12;
+      letter-spacing: -0.035em; margin-bottom: 20px;
+    }
+    .gradient-text {
+      background: linear-gradient(130deg, #165BC5, #4d8ef0);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .hero p { font-size: 16px; color: var(--muted); line-height: 1.75; margin-bottom: 34px; max-width: 460px; }
+    .hero-ctas { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 30px; }
+    .hero-trust { display: flex; flex-wrap: wrap; gap: 18px; }
+    .trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--dim); }
+
+    /* ── PHONE MOCKUP ── */
+    .phone-frame {
+      width: 255px; height: 515px;
+      background: linear-gradient(160deg, #1a2236 0%, #0e1521 100%);
+      border-radius: 40px; border: 2px solid rgba(255,255,255,0.1);
+      box-shadow: 0 50px 90px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.04), inset 0 1px 0 rgba(255,255,255,0.07);
+      padding: 18px 14px 14px; display: flex; flex-direction: column; gap: 9px;
+      position: relative; overflow: hidden;
+    }
+    .phone-glow {
+      position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+      width: 220px; height: 160px;
+      background: radial-gradient(circle, rgba(22,91,197,0.28), transparent 70%); pointer-events: none;
+    }
+    .phone-notch { width: 72px; height: 7px; background: rgba(255,255,255,0.08); border-radius: 100px; margin: 0 auto 4px; flex-shrink: 0; }
+    .pk { background: rgba(22,91,197,0.18); border: 1px solid rgba(22,91,197,0.28); border-radius: 14px; padding: 12px; text-align: center; flex-shrink: 0; }
+    .pk-lbl { font-size: 8.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .pk-val { font-size: 22px; font-weight: 800; color: #fff; margin: 3px 0; }
+    .pk-sub { font-size: 9px; color: var(--green); font-weight: 700; }
+    .prow { display: flex; gap: 8px; flex-shrink: 0; }
+    .pm { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 9px 8px; text-align: center; }
+    .pm-lbl { font-size: 7.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+    .pm-val { font-size: 13px; font-weight: 700; margin-top: 3px; }
+    .c-green { color: var(--green); } .c-red { color: #f87171; }
+    .pbar { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 10px; flex-shrink: 0; }
+    .pbar-lbl { font-size: 8px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; }
+    .bars { display: flex; align-items: flex-end; gap: 5px; height: 44px; }
+    .bar { flex: 1; border-radius: 4px 4px 0 0; background: rgba(22,91,197,0.38); }
+    .bar.hi { background: var(--blue); }
+    .ptx { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 7px; }
+    .ptx-lbl { font-size: 7.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+    .tx { display: flex; align-items: center; gap: 7px; }
+    .tx-ico { width: 20px; height: 20px; border-radius: 6px; background: rgba(22,91,197,0.2); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+    .tx-info { flex: 1; }
+    .tx-n { font-size: 8px; color: #e5e7eb; font-weight: 600; }
+    .tx-c { font-size: 7px; color: var(--muted); }
+    .tx-a { font-size: 9px; font-weight: 700; }
+    .pai { background: rgba(22,91,197,0.14); border: 1px solid rgba(22,91,197,0.3); border-radius: 12px; padding: 8px 10px; display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    .pai-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blue-light); flex-shrink: 0; animation: blink 1.6s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+    .pai-txt { font-size: 8px; color: #93c5fd; line-height: 1.45; }
+    .phone-mockup { display: flex; justify-content: center; }
+
+    /* ══════════════════════════════════════
+       STATS (EL PROBLEMA)
+    ══════════════════════════════════════ */
+    .stats-section { background: rgba(255,255,255,0.015); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); padding: 56px 24px; }
+    .stats-inner { max-width: 1100px; margin: 0 auto; }
+    .stats-label { text-align: center; font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .14em; margin-bottom: 10px; }
+    .stats-title { text-align: center; font-size: clamp(20px, 3vw, 28px); font-weight: 800; letter-spacing: -.02em; margin-bottom: 42px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    @media (max-width: 640px) { .stats-grid { grid-template-columns: 1fr; } }
+    .stat-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 32px 24px; text-align: center;
+      transition: border-color .2s, background .2s;
+    }
+    .stat-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(22,91,197,0.3); }
+    .stat-num { font-size: clamp(40px, 6vw, 58px); font-weight: 900; letter-spacing: -.04em; line-height: 1; margin-bottom: 10px; }
+    .stat-num.blue { color: var(--blue-light); }
+    .stat-num.red  { color: #f87171; }
+    .stat-num.amber { color: var(--amber); }
+    .stat-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .stat-source { font-size: 10px; color: var(--dim); margin-top: 10px; font-style: italic; }
+
+    /* ══════════════════════════════════════
+       SECTION UTILS
+    ══════════════════════════════════════ */
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 80px 24px; }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--blue); text-transform: uppercase; letter-spacing: .14em; margin-bottom: 10px; }
+    .section-title { font-size: clamp(26px, 4vw, 40px); font-weight: 800; letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 14px; }
+    .section-sub { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 520px; }
+    .section-hd { margin-bottom: 52px; }
+    .section-hd.center { text-align: center; }
+    .section-hd.center .section-sub { margin: 0 auto; }
+
+    /* ══════════════════════════════════════
+       BENEFICIOS
+    ══════════════════════════════════════ */
+    .benefits-bg { background: rgba(255,255,255,0.015); border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .benefits-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+    .bcard {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 22px; padding: 30px;
+      transition: background .2s, border-color .2s, transform .22s;
+    }
+    .bcard:hover { background: rgba(255,255,255,0.055); border-color: rgba(255,255,255,0.15); transform: translateY(-4px); }
+    .bcard-emoji { font-size: 30px; display: block; margin-bottom: 16px; line-height: 1; }
+    .bcard-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; letter-spacing: -.015em; }
+    .bcard-desc { font-size: 14px; color: var(--muted); line-height: 1.72; }
+
+    /* ══════════════════════════════════════
+       CÓMO FUNCIONA (3 PASOS)
+    ══════════════════════════════════════ */
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    @media (max-width: 680px) { .steps-grid { grid-template-columns: 1fr; } }
+    .step { display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+    .step:not(:last-child)::after {
+      content: '→';
+      position: absolute; top: 28px; right: -18px;
+      font-size: 20px; color: rgba(22,91,197,0.4);
+    }
+    @media (max-width: 680px) { .step:not(:last-child)::after { display: none; } }
+    .step-num {
+      width: 56px; height: 56px; border-radius: 16px;
+      background: rgba(22,91,197,0.12); border: 1px solid rgba(22,91,197,0.35);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 900; color: var(--blue-light); margin-bottom: 18px;
+    }
+    .step-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .step-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    /* ══════════════════════════════════════
+       PRICING
+    ══════════════════════════════════════ */
+    .pricing-anchor {
+      text-align: center; margin-bottom: 40px;
+      font-size: 14px; color: var(--muted); line-height: 1.6;
+    }
+    .pricing-anchor strong { color: #fff; }
+    .pricing-anchor .pill {
+      display: inline-block;
+      background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.3);
+      color: var(--amber); font-size: 12px; font-weight: 600;
+      padding: 3px 12px; border-radius: 100px; margin: 0 4px;
+    }
+    .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 820px; margin: 0 auto; }
+    @media (max-width: 620px) { .pricing-grid { grid-template-columns: 1fr; } }
+    .pcard {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 26px; padding: 38px 32px; position: relative; transition: transform .22s;
+    }
+    .pcard:hover { transform: translateY(-5px); }
+    .pcard.featured {
+      background: linear-gradient(160deg, rgba(22,91,197,0.22) 0%, rgba(11,62,161,0.1) 100%);
+      border-color: rgba(22,91,197,0.42);
+      box-shadow: 0 24px 64px rgba(22,91,197,0.22), 0 0 0 1px rgba(22,91,197,0.18);
+    }
+    .feat-badge {
+      position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(90deg, #165BC5, #4d8ef0);
+      color: #fff; font-size: 11px; font-weight: 700;
+      padding: 4px 16px; border-radius: 100px; white-space: nowrap; letter-spacing: .03em;
+    }
+    .plan-name { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 10px; }
+    .pcard.featured .plan-name { color: #93c5fd; }
+    .plan-price { display: flex; align-items: baseline; gap: 3px; margin-bottom: 6px; }
+    .plan-price .cur { font-size: 20px; font-weight: 600; color: var(--muted); }
+    .plan-price .amt { font-size: 54px; font-weight: 900; letter-spacing: -.045em; line-height: 1; }
+    .plan-price .per { font-size: 14px; color: var(--muted); }
+    .plan-desc { font-size: 13px; color: var(--muted); margin-bottom: 8px; line-height: 1.6; }
+    .plan-anchor { font-size: 11px; color: var(--dim); margin-bottom: 22px; font-style: italic; }
+    .plan-anchor strong { color: var(--amber); font-style: normal; }
+    .plan-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin-bottom: 22px; }
+    .pcard.featured .plan-divider { border-color: rgba(22,91,197,0.22); }
+    .plan-feats { list-style: none; display: flex; flex-direction: column; gap: 13px; margin-bottom: 32px; }
+    .pfeat { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: #d1d5db; line-height: 1.5; }
+    .fcheck { width: 19px; height: 19px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .fcheck.b { background: rgba(22,91,197,0.22); }
+    .fcheck.g { background: rgba(52,211,153,0.15); }
+    .plan-btn { display: block; width: 100%; text-align: center; padding: 14px; border-radius: 13px; font-size: 15px; font-weight: 700; cursor: pointer; border: none; transition: all .2s; }
+    .plan-btn.outline { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.16); }
+    .plan-btn.outline:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.28); }
+    .plan-btn.solid { background: var(--blue); color: #fff; box-shadow: 0 6px 26px rgba(22,91,197,0.42); }
+    .plan-btn.solid:hover { background: var(--blue-dark); transform: translateY(-2px); }
+    .pricing-note { text-align: center; margin-top: 20px; font-size: 12px; color: var(--dim); }
+
+    /* ══════════════════════════════════════
+       PRIVACIDAD (por qué no es gratis)
+    ══════════════════════════════════════ */
+    .privacy-section { padding: 0 24px 80px; }
+    .privacy-card {
+      max-width: 820px; margin: 0 auto;
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 24px; padding: 36px 40px;
+      display: flex; align-items: flex-start; gap: 24px;
+    }
+    @media (max-width: 600px) { .privacy-card { flex-direction: column; padding: 28px 24px; } }
+    .privacy-icon { font-size: 36px; flex-shrink: 0; }
+    .privacy-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; letter-spacing: -.015em; }
+    .privacy-card p { font-size: 14px; color: var(--muted); line-height: 1.72; }
+    .privacy-card p em { color: #fff; font-style: italic; }
+
+    /* ══════════════════════════════════════
+       CTA FINAL
+    ══════════════════════════════════════ */
+    .cta-section { text-align: center; padding: 80px 24px 100px; }
+    .cta-section h2 { font-size: clamp(26px, 4vw, 42px); font-weight: 800; letter-spacing: -.025em; margin-bottom: 14px; }
+    .cta-section p { color: var(--muted); font-size: 16px; margin-bottom: 32px; max-width: 460px; margin-left: auto; margin-right: auto; }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    .footer { background: var(--bg-footer); border-top: 1px solid rgba(255,255,255,0.05); }
+    .footer-inner { max-width: 1100px; margin: 0 auto; padding: 56px 24px 36px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+    @media (max-width: 600px) { .footer-grid { grid-template-columns: 1fr; gap: 28px; } }
+    .footer-brand p { font-size: 13px; color: var(--dim); line-height: 1.7; max-width: 280px; margin-top: 14px; }
+    .fcol h4 { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .12em; margin-bottom: 16px; }
+    .fcol ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .fcol a { font-size: 13px; color: var(--dim); transition: color .2s; }
+    .fcol a:hover { color: #fff; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+    .footer-copy { font-size: 12px; color: var(--dim); }
+    .socials { display: flex; align-items: center; gap: 18px; }
+    .socials a { font-size: 13px; color: var(--dim); transition: color .2s; }
+    .socials a:hover { color: #fff; }
+
+    /* ── INLINE ICON ── */
+    .ico { display: inline-block; vertical-align: middle; }
+  </style>
+</head>
+<body>
+
+  <!-- ════ HEADER ════ -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">💎</div>
+        <span class="logo-text">Monedge</span>
+      </div>
+      <nav class="nav">
+        <a href="#problema">El Problema</a>
+        <a href="#beneficios">Beneficios</a>
+        <a href="#como-funciona">Cómo Funciona</a>
+        <a href="#precios">Precios</a>
+      </nav>
+      <div class="header-actions">
+        <a href="#" class="btn-ghost">Iniciar sesión</a>
+        <a href="#precios" class="btn-primary">
+          Comenzar
+          <svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- ════ HERO ════ -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-content">
+
+      <!-- Texto -->
+      <div>
+        <div class="hero-badge">
+          <svg class="ico" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Copiloto financiero · Gemini 2.5 Flash
+        </div>
+
+        <h1>
+          Deja de preguntarte<br>a dónde se fue tu dinero.<br>
+          <span class="gradient-text">Deja que la IA te lo diga.</span>
+        </h1>
+
+        <p>
+          Monedge categoriza tus gastos automáticamente, detecta fugas de dinero
+          y te ayuda a ahorrar hasta un <strong style="color:#fff">20% de tu salario</strong> sin esfuerzo.
+        </p>
+
+        <div class="hero-ctas" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:30px;">
+          <a href="#precios" class="btn-primary lg">
+            Prueba Monedge Gratis por 14 Días
+            <svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#como-funciona" class="btn-outline">Ver cómo funciona</a>
+        </div>
+
+        <div class="hero-trust" style="display:flex;flex-wrap:wrap;gap:18px;">
+          <span class="trust-item">
+            <svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Sin tarjeta de crédito
+          </span>
+          <span class="trust-item">
+            <svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            14 días gratis
+          </span>
+          <span class="trust-item">
+            <svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Datos encriptados
+          </span>
+          <span class="trust-item">
+            <svg class="ico" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Cancela cuando quieras
+          </span>
+        </div>
+      </div>
+
+      <!-- Phone Mockup -->
+      <div class="phone-mockup">
+        <div class="phone-frame">
+          <div class="phone-glow"></div>
+          <div class="phone-notch"></div>
+          <div class="pk">
+            <div class="pk-lbl">Balance total</div>
+            <div class="pk-val">$28,450</div>
+            <div class="pk-sub">▲ Ahorraste 20% este mes</div>
+          </div>
+          <div class="prow">
+            <div class="pm"><div class="pm-lbl">Ingresos</div><div class="pm-val c-green">$12,000</div></div>
+            <div class="pm"><div class="pm-lbl">Gastos</div><div class="pm-val c-red">$4,320</div></div>
+          </div>
+          <div class="pbar">
+            <div class="pbar-lbl">Últimos 6 meses</div>
+            <div class="bars">
+              <div class="bar" style="height:38%"></div>
+              <div class="bar" style="height:54%"></div>
+              <div class="bar" style="height:34%"></div>
+              <div class="bar" style="height:68%"></div>
+              <div class="bar" style="height:58%"></div>
+              <div class="bar hi" style="height:84%"></div>
+            </div>
+          </div>
+          <div class="ptx">
+            <div class="ptx-lbl">Recientes · IA categorizada</div>
+            <div class="tx">
+              <div class="tx-ico">🍔</div>
+              <div class="tx-info"><div class="tx-n">McDonald's</div><div class="tx-c">Alimentación</div></div>
+              <div class="tx-a c-red">−$85</div>
+            </div>
+            <div class="tx">
+              <div class="tx-ico">💼</div>
+              <div class="tx-info"><div class="tx-n">Salario</div><div class="tx-c">Ingresos</div></div>
+              <div class="tx-a c-green">+$12,000</div>
+            </div>
+            <div class="tx">
+              <div class="tx-ico">⚡</div>
+              <div class="tx-info"><div class="tx-n">CFE</div><div class="tx-c">Servicios</div></div>
+              <div class="tx-a c-red">−$420</div>
+            </div>
+          </div>
+          <div class="pai">
+            <div class="pai-dot"></div>
+            <div class="pai-txt">Puedes ahorrar $2,400 este mes reduciendo restaurantes 🎯</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ════ EL PROBLEMA (STATS) ════ -->
+  <section id="problema" class="stats-section">
+    <div class="stats-inner">
+      <div class="stats-label">El problema que resolvemos</div>
+      <h2 class="stats-title">México tiene una crisis de control financiero</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num red">77%</div>
+          <p class="stat-desc">de los mexicanos <strong>no monitorean activamente</strong> sus finanzas personales.</p>
+          <p class="stat-source">Fuente: SHCP — Semana Nac. de Educación Financiera, 2025</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num amber">50%</div>
+          <p class="stat-desc">de la población <strong>llega a fin de mes prácticamente sin recursos</strong> económicos.</p>
+          <p class="stat-source">Fuente: El Economista, octubre 2025</p>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num blue">$0</div>
+          <p class="stat-desc">apps con <strong>IA real para finanzas personales</strong> verdaderamente asequibles en México.</p>
+          <p class="stat-source">Análisis de mercado — Monedge, 2026</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════ BENEFICIOS ════ -->
+  <section id="beneficios" class="benefits-bg">
+    <div class="wrap">
+      <div class="section-hd center">
+        <div class="section-label">Beneficios</div>
+        <h2 class="section-title">No es una bitácora. Es un copiloto.</h2>
+        <p class="section-sub">
+          Las apps tradicionales solo registran el pasado. Monedge analiza, proyecta y te dice qué hacer a continuación.
+        </p>
+      </div>
+      <div class="benefits-grid">
+        <div class="bcard">
+          <span class="bcard-emoji">🤖</span>
+          <h3 class="bcard-title">Inteligencia Artificial Financiera</h3>
+          <p class="bcard-desc">
+            No más hojas de cálculo aburridas. Nuestra IA lee tus recibos,
+            categoriza tus compras y te avisa si estás gastando de más.
+          </p>
+        </div>
+        <div class="bcard">
+          <span class="bcard-emoji">🔒</span>
+          <h3 class="bcard-title">Seguridad Bancaria</h3>
+          <p class="bcard-desc">
+            Conexión encriptada. Monedge solo lee tus transacciones,
+            jamás puede mover tu dinero. Tu información está 100% segura.
+          </p>
+        </div>
+        <div class="bcard">
+          <span class="bcard-emoji">🎯</span>
+          <h3 class="bcard-title">Metas de Ahorro Automáticas</h3>
+          <p class="bcard-desc">
+            Dinos qué quieres comprar y Monedge te dirá exactamente
+            cuánto apartar cada semana para lograrlo.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════ CÓMO FUNCIONA ════ -->
+  <section id="como-funciona">
+    <div class="wrap">
+      <div class="section-hd center">
+        <div class="section-label">Proceso</div>
+        <h2 class="section-title">Listo en 3 pasos</h2>
+        <p class="section-sub">Sin configuraciones complicadas. Empiezas a usar Monedge de inmediato.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-num">01</div>
+          <h3 class="step-title">Conecta tus cuentas</h3>
+          <p class="step-desc">Importa transacciones bancarias o ingresalas manualmente. Monedge las organiza al instante.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <h3 class="step-title">La IA analiza todo</h3>
+          <p class="step-desc">El motor de IA clasifica, detecta patrones y genera reportes automáticos sin que hagas nada.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <h3 class="step-title">Tú tomas decisiones</h3>
+          <p class="step-desc">Pregunta en lenguaje natural y obtén análisis reales sobre tu dinero: "¿En qué gasté más este mes?"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════ PRECIOS ════ -->
+  <section id="precios" style="background:rgba(255,255,255,0.015);border-top:1px solid rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.05);">
+    <div class="wrap">
+      <div class="section-hd center">
+        <div class="section-label">Precios</div>
+        <h2 class="section-title">Simple. Transparente. Sin sorpresas.</h2>
+        <p class="section-sub">Empieza gratis 14 días, sin tarjeta de crédito. Cancela cuando quieras.</p>
+      </div>
+
+      <!-- Pricing anchor text -->
+      <div class="pricing-anchor">
+        <span class="pill">💡 Psicología de precios</span>
+        En México, un café o una comida rápida cuesta entre <strong>$50 y $100 MXN</strong>.
+        Monedge cuesta lo mismo — y te ayuda a ahorrar el dinero de <strong>muchas más comidas</strong> en el futuro.
+      </div>
+
+      <div class="pricing-grid">
+
+        <!-- Plan Básico -->
+        <div class="pcard">
+          <div class="plan-name">Plan Básico</div>
+          <div class="plan-price">
+            <span class="cur">$</span><span class="amt">89</span><span class="per">MXN / mes</span>
+          </div>
+          <p class="plan-desc">Para el usuario que busca organizar su caos financiero.</p>
+          <p class="plan-anchor">Equivalente a un <strong>gasto hormiga diario</strong>.</p>
+          <hr class="plan-divider" />
+          <ul class="plan-feats">
+            <li class="pfeat">
+              <span class="fcheck b"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4d8ef0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Clasificación automática de gastos
+            </li>
+            <li class="pfeat">
+              <span class="fcheck b"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4d8ef0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Hasta 200 consultas de IA al mes
+            </li>
+            <li class="pfeat">
+              <span class="fcheck b"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4d8ef0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Reportes mensuales visuales
+            </li>
+            <li class="pfeat">
+              <span class="fcheck b"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#4d8ef0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Soporte estándar por correo
+            </li>
+          </ul>
+          <a href="#" class="plan-btn outline">Elegir Plan Básico</a>
+        </div>
+
+        <!-- Plan Pro -->
+        <div class="pcard featured">
+          <div class="feat-badge">⭐ Recomendado</div>
+          <div class="plan-name">Plan Pro / Experto</div>
+          <div class="plan-price">
+            <span class="cur">$</span><span class="amt">199</span><span class="per">MXN / mes</span>
+          </div>
+          <p class="plan-desc">Para quienes quieren control total de su patrimonio.</p>
+          <p class="plan-anchor">La IA como tu <strong>agente financiero autónomo</strong>.</p>
+          <hr class="plan-divider" />
+          <ul class="plan-feats">
+            <li class="pfeat">
+              <span class="fcheck g"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Todo el Plan Básico incluido
+            </li>
+            <li class="pfeat">
+              <span class="fcheck g"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Consultas de IA ilimitadas
+            </li>
+            <li class="pfeat">
+              <span class="fcheck g"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Análisis predictivos y escenarios de inversión
+            </li>
+            <li class="pfeat">
+              <span class="fcheck g"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+              Soporte prioritario 24/7
+            </li>
+          </ul>
+          <a href="#" class="plan-btn solid">Elegir Plan Pro</a>
+        </div>
+
+      </div>
+      <p class="pricing-note">Todos los planes incluyen 14 días de prueba gratis · Sin tarjeta de crédito · Sin cargos ocultos</p>
+    </div>
+  </section>
+
+
+  <!-- ════ POR QUÉ NO ES GRATIS ════ -->
+  <section class="privacy-section">
+    <div class="wrap" style="padding-top:48px;padding-bottom:0;">
+      <div class="privacy-card">
+        <div class="privacy-icon">🔐</div>
+        <div>
+          <h3>¿Por qué Monedge no tiene versión gratuita?</h3>
+          <p>
+            En FinTech, la confianza lo es todo. Cuando una app financiera es gratis, el consumidor consciente se pregunta:
+            <em>"Si el producto es gratis, ¿mis datos bancarios son el producto?"</em><br><br>
+            Monedge descarta el modelo Freemium para garantizar un ecosistema 100% cerrado y sin publicidad.
+            Nuestra promesa es simple: <em>tu dinero y tus datos nunca serán el producto.</em>
+            Tú pagas $89 pesos — menos que una comida rápida — y a cambio obtienes una plataforma que protege tus datos y te genera ahorros reales.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ════ CTA FINAL ════ -->
+  <section id="contacto" class="cta-section">
+    <h2>Toma el control de tu dinero hoy</h2>
+    <p>Únete gratis por 14 días. Sin tarjeta de crédito. Sin trampa. Te cuesta más <em>no</em> usarlo.</p>
+    <a href="#precios" class="btn-primary lg">
+      Prueba Monedge Gratis por 14 Días
+      <svg class="ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </section>
+
+
+  <!-- ════ FOOTER ════ -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="logo">
+            <div class="logo-icon">💎</div>
+            <span class="logo-text">Monedge</span>
+          </div>
+          <p>Copiloto financiero con IA nativa. Elimina la fricción del registro manual y toma decisiones con datos reales.</p>
+        </div>
+        <div class="fcol">
+          <h4>Producto</h4>
+          <ul>
+            <li><a href="#problema">El Problema</a></li>
+            <li><a href="#beneficios">Beneficios</a></li>
+            <li><a href="#como-funciona">Cómo Funciona</a></li>
+            <li><a href="#precios">Precios</a></li>
+          </ul>
+        </div>
+        <div class="fcol">
+          <h4>Empresa</h4>
+          <ul>
+            <li><a href="#">Acerca de</a></li>
+            <li><a href="#">Privacidad</a></li>
+            <li><a href="#">Términos de uso</a></li>
+            <li><a href="#">Contacto</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 Monedge · Diego Andrey López Camal · Emprendimiento de Negocios de Software — UABC. Todos los derechos reservados.</p>
+        <div class="socials">
+          <a href="#">GitHub</a>
+          <a href="#">Twitter</a>
+          <a href="#">Instagram</a>
+          <a href="#">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
